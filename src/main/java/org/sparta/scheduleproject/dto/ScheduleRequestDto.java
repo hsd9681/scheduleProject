@@ -10,5 +10,5 @@ public class ScheduleRequestDto {
     private String title;
     private String contents;
     private String username;
-    private Long password;
+    private String password;
 }

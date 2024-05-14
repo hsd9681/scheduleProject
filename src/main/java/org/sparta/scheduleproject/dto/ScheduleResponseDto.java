@@ -11,16 +11,19 @@ public class ScheduleResponseDto {
     private String title;
     private String username;
     private String contents;
-    private Long password;
-    private LocalDateTime createdAt;
 
     public ScheduleResponseDto(Schedule schedule) {
         this.id = schedule.getId();
         this.title = schedule.getTitle();
         this.username = schedule.getUsername();
         this.contents = schedule.getContents();
-        this.password = schedule.getPassword();
-        this.createdAt = schedule.getCreatedAt();
 
+    }
+
+    public ScheduleResponseDto(Long id, String title, String username, String contents ) {
+        this.id = id;
+        this.title = title;
+        this.username = username;
+        this.contents = contents;
     }
 }
