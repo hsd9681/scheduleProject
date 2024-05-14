@@ -9,14 +9,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.sql.*;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -36,7 +30,7 @@ public class ScheduleController {
 
 
         KeyHolder keyHolder = new GeneratedKeyHolder(); // 기본 키를 반환받기 위한 객체
-        String sql = "INSERT INTO schedule (title, username, contents, password) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO schedule (title, username, contents, password, createdAt) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update( con -> {
                     PreparedStatement preparedStatement = con.prepareStatement(sql,
                             Statement.RETURN_GENERATED_KEYS);
@@ -45,6 +39,7 @@ public class ScheduleController {
                     preparedStatement.setString(2, schedule.getUsername());
                     preparedStatement.setString(3, schedule.getContents());
                     preparedStatement.setString(4, schedule.getPassword());
+                    preparedStatement.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
 
                     return preparedStatement;
                 },
@@ -92,5 +87,53 @@ public class ScheduleController {
                 return new ScheduleResponseDto(id,title,username, contents);
             }
         });
+    }
+
+    
+    //수정
+    @PutMapping("/schedules/{id}")
+    public Long updateMemo(@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto) {
+        // 해당 메모가 DB에 존재하는지 확인
+        Schedule schedule = findById(id);
+
+        if(schedule != null) {
+            // memo 내용 수정
+            String sql = "UPDATE schedule SET title = ?, username = ?, contents = ? WHERE id = ?";
+            jdbcTemplate.update(sql, requestDto.getTitle(), requestDto.getUsername(), requestDto.getContents(), id);
+
+            return id;
+        } else {
+            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
+        }
+    }
+        @DeleteMapping("/schedules/{id}")
+    public Long deleteMemo(@PathVariable Long id) {
+        // 해당 메모가 DB에 존재하는지 확인
+        Schedule schedule = findById(id);
+        if(schedule != null) {
+            // memo 삭제
+            String sql = "DELETE FROM schedule WHERE id = ?";
+            jdbcTemplate.update(sql, id);
+
+            return id;
+        } else {
+            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
+        }
+    }
+
+    private Schedule findById(Long id) {
+        // DB 조회
+        String sql = "SELECT * FROM schedule WHERE id = ?";
+
+        return jdbcTemplate.query(sql, resultSet -> {
+            if(resultSet.next()) {
+                Schedule memo = new Schedule();
+                memo.setUsername(resultSet.getString("username"));
+                memo.setContents(resultSet.getString("contents"));
+                return memo;
+            } else {
+                return null;
+            }
+        }, id);
     }
 }

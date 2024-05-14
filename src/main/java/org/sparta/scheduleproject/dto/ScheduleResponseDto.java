@@ -11,12 +11,14 @@ public class ScheduleResponseDto {
     private String title;
     private String username;
     private String contents;
+    private String password;
 
     public ScheduleResponseDto(Schedule schedule) {
         this.id = schedule.getId();
         this.title = schedule.getTitle();
         this.username = schedule.getUsername();
         this.contents = schedule.getContents();
+        this.password = schedule.getPassword();
 
     }
 
