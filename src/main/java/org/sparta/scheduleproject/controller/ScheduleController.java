@@ -92,25 +92,26 @@ public class ScheduleController {
     
     //수정
     @PutMapping("/schedules/{id}")
-    public Long updateMemo(@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto) {
+    public ScheduleResponseDto updateMemo(@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto) {
         // 해당 메모가 DB에 존재하는지 확인
         Schedule schedule = findById(id);
 
-        if(schedule != null) {
+        if(schedule != null&& schedule.getPassword().equals(requestDto.getPassword())) {
             // memo 내용 수정
             String sql = "UPDATE schedule SET title = ?, username = ?, contents = ? WHERE id = ?";
             jdbcTemplate.update(sql, requestDto.getTitle(), requestDto.getUsername(), requestDto.getContents(), id);
 
-            return id;
+            ScheduleResponseDto reponse = new ScheduleResponseDto(schedule);
+            return reponse;
         } else {
             throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
         }
     }
         @DeleteMapping("/schedules/{id}")
-    public Long deleteMemo(@PathVariable Long id) {
+    public Long deleteMemo(@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto) {
         // 해당 메모가 DB에 존재하는지 확인
         Schedule schedule = findById(id);
-        if(schedule != null) {
+        if(schedule != null&& schedule.getPassword().equals(requestDto.getPassword())) {
             // memo 삭제
             String sql = "DELETE FROM schedule WHERE id = ?";
             jdbcTemplate.update(sql, id);
@@ -127,10 +128,14 @@ public class ScheduleController {
 
         return jdbcTemplate.query(sql, resultSet -> {
             if(resultSet.next()) {
-                Schedule memo = new Schedule();
-                memo.setUsername(resultSet.getString("username"));
-                memo.setContents(resultSet.getString("contents"));
-                return memo;
+                Schedule schedule = new Schedule();
+                schedule.setUsername(resultSet.getString("username"));
+                schedule.setContents(resultSet.getString("contents"));
+                schedule.setId(resultSet.getLong("id"));
+                schedule.setTitle(resultSet.getString("title"));
+                schedule.setPassword(resultSet.getString("password"));
+
+                return schedule;
             } else {
                 return null;
             }
