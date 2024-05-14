@@ -29,4 +29,12 @@ public class Schedule extends Timestamped {
         this.createdAt = LocalDateTime.now();
 
     }
+
+    public void selectschedule(Schedule schedule) {
+        this.title = schedule.getTitle();
+        this.username = schedule.getUsername();
+        this.contents = schedule.getContents();
+        this.password = schedule.getPassword();
+        this.createdAt = LocalDateTime.now();
+    }
 }

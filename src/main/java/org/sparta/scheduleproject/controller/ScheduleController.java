@@ -28,14 +28,27 @@ public class ScheduleController {
         return scheduleresponseDto;
 
     }
-
+    //전체 조회
     @GetMapping("/schedules")
-    public List<ScheduleResponseDto> getSchedules(){
+    public List<ScheduleResponseDto> getAllSchedules(){
         List<ScheduleResponseDto> scheduleResponseDtos = scheduleList.values().stream()
                 .map(ScheduleResponseDto::new).toList();
 
         return scheduleResponseDtos;
     }
 
+    //스케줄 하나 가져오기
+    @GetMapping("/schedule/{id}")
+    public ScheduleResponseDto getoneSchedule(@PathVariable Long id) {
+        if (scheduleList.containsKey(id)) {
+            // 해당 스케줄 가져오기
+            Schedule schedule = scheduleList.get(id);
+            schedule.selectschedule(schedule);
 
+            return new ScheduleResponseDto(schedule);
+        }else {
+            throw new IllegalArgumentException("선택한 스케줄 존재하지 않습니다.");
+        }
+
+    }
 }
