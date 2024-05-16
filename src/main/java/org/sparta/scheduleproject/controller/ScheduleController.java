@@ -3,7 +3,6 @@ package org.sparta.scheduleproject.controller;
 import org.sparta.scheduleproject.dto.ScheduleRequestDto;
 import org.sparta.scheduleproject.dto.ScheduleResponseDto;
 import org.sparta.scheduleproject.service.ScheduleService;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +19,6 @@ public class ScheduleController {
     @PostMapping("/schedules")
     public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto requestDto){
         return scheduleService.createSchedule(requestDto);
-
     }
     //스케줄 하나 가져오기
     @GetMapping("/schedule/{id}")

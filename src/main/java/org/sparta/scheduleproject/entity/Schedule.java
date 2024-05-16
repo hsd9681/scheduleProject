@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.sparta.scheduleproject.dto.ScheduleRequestDto;
 
+import java.time.LocalDateTime;
+
 @Entity // JPA가 관리할 수 있는 Entity 클래스 지정
 @Getter
 @Setter
@@ -27,7 +29,9 @@ public class Schedule extends Timestamped{
     private String password;
 
 
+
     public Schedule(ScheduleRequestDto requestDto) {
+
         this.username = requestDto.getUsername();
         this.title = requestDto.getTitle();
         this.password = requestDto.getPassword();
@@ -36,7 +40,8 @@ public class Schedule extends Timestamped{
     }
     public void update(ScheduleRequestDto requestDto) {
         this.username = requestDto.getUsername();
+        this.title = requestDto.getTitle();
+        this.password = requestDto.getPassword();
         this.contents = requestDto.getContents();
-
     }
 }

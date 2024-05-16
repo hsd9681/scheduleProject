@@ -3,13 +3,15 @@ package org.sparta.scheduleproject.service;
 import org.sparta.scheduleproject.dto.ScheduleRequestDto;
 import org.sparta.scheduleproject.dto.ScheduleResponseDto;
 import org.sparta.scheduleproject.entity.Schedule;
+import org.sparta.scheduleproject.exception.InvalidPasswordException;
 import org.sparta.scheduleproject.repository.ScheduleRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Component
+@Service
 
 public class ScheduleService {
 
@@ -21,6 +23,7 @@ public class ScheduleService {
 
     public ScheduleResponseDto createSchedule(ScheduleRequestDto requestDto) {
         Schedule schedule = new Schedule(requestDto);
+        //System.out.println(schedule);
         Schedule saveSchedule =  scheduleRepository.save(schedule);
         // Entity -> ResponseDto
         ScheduleResponseDto scheduleResponseDto = new ScheduleResponseDto(schedule);
@@ -32,21 +35,30 @@ public class ScheduleService {
     }
 
     public List<ScheduleResponseDto> getAllSchedules() {
-        return scheduleRepository.findAllByOrderByModifiedAtDesc().stream().map(ScheduleResponseDto::new).toList();
+        return scheduleRepository.findAllByOrderByCreatedAtDesc().stream().map(ScheduleResponseDto::new).toList();
     }
 
     @Transactional
     public ScheduleResponseDto updateMemo(Long id, ScheduleRequestDto requestDto) {
-
         Schedule schedule = findSchedule(id);
+
+        if (!schedule.getPassword().equals(requestDto.getPassword())) {
+            throw new InvalidPasswordException("password wrong");
+        }
+
         schedule.update(requestDto);
         return new ScheduleResponseDto(schedule);
     }
 
     public Long deleteMemo(Long id, ScheduleRequestDto requestDto) {
         Schedule schedule = findSchedule(id);
-            scheduleRepository.delete(schedule);
-            return id;
+
+        if (!schedule.getPassword().equals(requestDto.getPassword())) {
+            throw new InvalidPasswordException("password wrong");
+        }
+
+        scheduleRepository.delete(schedule);
+        return id;
     }
 
     private  Schedule findSchedule(Long id) {
