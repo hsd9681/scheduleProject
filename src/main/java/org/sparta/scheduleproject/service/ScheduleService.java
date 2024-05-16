@@ -6,24 +6,23 @@ import org.sparta.scheduleproject.entity.Schedule;
 import org.sparta.scheduleproject.repository.ScheduleRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 public class ScheduleService {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final ScheduleRepository scheduleRepository;
 
     public ScheduleService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+        this.scheduleRepository = new ScheduleRepository(jdbcTemplate);
     }
 
     public ScheduleResponseDto createSchedule(ScheduleRequestDto requestDto) {
         Schedule schedule = new Schedule(requestDto);
 
-        ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
+
         Schedule saveSchedule =  scheduleRepository.save(schedule);
 
         // Entity -> ResponseDto
@@ -50,7 +49,7 @@ public class ScheduleService {
 
     public List<ScheduleResponseDto> getAllSchedules() {
 
-        ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
+
         return scheduleRepository.findAll();
 
 
@@ -58,7 +57,7 @@ public class ScheduleService {
 
     public ScheduleResponseDto updateMemo(Long id, ScheduleRequestDto requestDto) {
 
-        ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
+
 
 
         Schedule schedule = scheduleRepository.findById(id);
@@ -75,7 +74,7 @@ public class ScheduleService {
 
     public Long deleteMemo(Long id, ScheduleRequestDto requestDto) {
 
-        ScheduleRepository scheduleRepository = new ScheduleRepository(jdbcTemplate);
+        
         Schedule schedule = scheduleRepository.findById(id);
         if(schedule != null&& schedule.getPassword().equals(requestDto.getPassword())) {
             // memo 삭제

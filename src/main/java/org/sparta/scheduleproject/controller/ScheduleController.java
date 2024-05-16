@@ -12,42 +12,35 @@ import java.util.List;
 @RequestMapping("/api")
 public class ScheduleController {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final ScheduleService scheduleService;
 
     public ScheduleController(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+        this.scheduleService = new ScheduleService(jdbcTemplate);
     }
     @PostMapping("/schedules")
     public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto requestDto){
-
-        ScheduleService scheduleService = new ScheduleService(jdbcTemplate);
         return scheduleService.createSchedule(requestDto);
 
     }
     //스케줄 하나 가져오기
     @GetMapping("/schedule/{id}")
     public List<ScheduleResponseDto> getoneSchedule(@PathVariable Long id) {
-        ScheduleService scheduleService = new ScheduleService(jdbcTemplate);
         return scheduleService.getoneSchedule(id);
 
     }
     //전체 조회
     @GetMapping("/schedules")
     public List<ScheduleResponseDto> getAllSchedules(){
-        ScheduleService scheduleService = new ScheduleService(jdbcTemplate);
         return scheduleService.getAllSchedules();
-
     }
     //수정
     @PutMapping("/schedules/{id}")
     public ScheduleResponseDto updateMemo(@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto) {
         // 해당 메모가 DB에 존재하는지 확인
-        ScheduleService scheduleService = new ScheduleService(jdbcTemplate);
         return  scheduleService.updateMemo(id, requestDto);
     }
         @DeleteMapping("/schedules/{id}")
     public Long deleteMemo(@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto) {
-        ScheduleService scheduleService = new ScheduleService(jdbcTemplate);
         return  scheduleService.deleteMemo(id, requestDto);
     }
 }
