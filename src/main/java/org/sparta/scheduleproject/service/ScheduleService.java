@@ -4,19 +4,18 @@ import org.sparta.scheduleproject.dto.ScheduleRequestDto;
 import org.sparta.scheduleproject.dto.ScheduleResponseDto;
 import org.sparta.scheduleproject.entity.Schedule;
 import org.sparta.scheduleproject.repository.ScheduleRepository;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
+
+@Component
 
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
 
-    public ScheduleService(JdbcTemplate jdbcTemplate) {
-        this.scheduleRepository = new ScheduleRepository(jdbcTemplate);
+    public ScheduleService(ScheduleRepository scheduleRepository) {
+        this.scheduleRepository = scheduleRepository;
     }
 
     public ScheduleResponseDto createSchedule(ScheduleRequestDto requestDto) {
@@ -32,19 +31,7 @@ public class ScheduleService {
     }
 
     public List<ScheduleResponseDto> getoneSchedule(Long id) {
-        String sql = "SELECT * FROM schedule where id =" +id+"";
-
-        return jdbcTemplate.query(sql, new RowMapper<ScheduleResponseDto>() {
-            @Override
-            public ScheduleResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-                Long id = rs.getLong("id");
-                String title = rs.getString("title");
-                String username = rs.getString("username");
-                String contents = rs.getString("contents");
-                return new ScheduleResponseDto(id,title,username, contents);
-            }
-        });
+        return scheduleRepository.findOne(id);
     }
 
     public List<ScheduleResponseDto> getAllSchedules() {
@@ -56,9 +43,6 @@ public class ScheduleService {
     }
 
     public ScheduleResponseDto updateMemo(Long id, ScheduleRequestDto requestDto) {
-
-
-
 
         Schedule schedule = scheduleRepository.findById(id);
 
@@ -74,7 +58,7 @@ public class ScheduleService {
 
     public Long deleteMemo(Long id, ScheduleRequestDto requestDto) {
 
-        
+
         Schedule schedule = scheduleRepository.findById(id);
         if(schedule != null&& schedule.getPassword().equals(requestDto.getPassword())) {
             // memo 삭제

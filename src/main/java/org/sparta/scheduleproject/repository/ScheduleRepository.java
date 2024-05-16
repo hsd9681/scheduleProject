@@ -7,10 +7,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.List;
 
+@Component
 public class ScheduleRepository {
 
     private final JdbcTemplate jdbcTemplate;
@@ -89,5 +91,21 @@ public class ScheduleRepository {
                 return null;
             }
         }, id);
+    }
+
+    public List<ScheduleResponseDto> findOne(Long id) {
+        String sql = "SELECT * FROM schedule where id =" +id+"";
+
+        return jdbcTemplate.query(sql, new RowMapper<ScheduleResponseDto>() {
+            @Override
+            public ScheduleResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+                Long id = rs.getLong("id");
+                String title = rs.getString("title");
+                String username = rs.getString("username");
+                String contents = rs.getString("contents");
+                return new ScheduleResponseDto(id,title,username, contents);
+            }
+        });
     }
 }

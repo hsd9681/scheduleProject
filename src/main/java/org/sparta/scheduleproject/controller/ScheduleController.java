@@ -14,8 +14,8 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
-    public ScheduleController(JdbcTemplate jdbcTemplate) {
-        this.scheduleService = new ScheduleService(jdbcTemplate);
+    public ScheduleController(ScheduleService scheduleService) {
+        this.scheduleService = scheduleService;
     }
     @PostMapping("/schedules")
     public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto requestDto){
