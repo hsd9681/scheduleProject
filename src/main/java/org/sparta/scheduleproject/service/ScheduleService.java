@@ -21,13 +21,9 @@ public class ScheduleService {
 
     public ScheduleResponseDto createSchedule(ScheduleRequestDto requestDto) {
         Schedule schedule = new Schedule(requestDto);
-
-
         Schedule saveSchedule =  scheduleRepository.save(schedule);
-
         // Entity -> ResponseDto
         ScheduleResponseDto scheduleResponseDto = new ScheduleResponseDto(schedule);
-
         return scheduleResponseDto;
     }
 
@@ -36,39 +32,26 @@ public class ScheduleService {
     }
 
     public List<ScheduleResponseDto> getAllSchedules() {
-
-
-        return scheduleRepository.findAll().stream().map(ScheduleResponseDto::new).toList();
-
-
+        return scheduleRepository.findAllByOrderByModifiedAtDesc().stream().map(ScheduleResponseDto::new).toList();
     }
 
     @Transactional
     public ScheduleResponseDto updateMemo(Long id, ScheduleRequestDto requestDto) {
 
         Schedule schedule = findSchedule(id);
-
         schedule.update(requestDto);
-
         return new ScheduleResponseDto(schedule);
     }
 
     public Long deleteMemo(Long id, ScheduleRequestDto requestDto) {
-
-
         Schedule schedule = findSchedule(id);
-
-
             scheduleRepository.delete(schedule);
             return id;
-
-
     }
 
     private  Schedule findSchedule(Long id) {
         return scheduleRepository.findById(id).orElseThrow(() ->{
             return new IllegalArgumentException("Schedule not found");
-            //schedule != null&& schedule.getPassword().equals(requestDto.getPassword())
         });
     }
 

@@ -11,7 +11,9 @@ import org.sparta.scheduleproject.dto.ScheduleRequestDto;
 @Setter
 @Table(name = "schedule") // 매핑할 테이블의 이름을 지정
 @NoArgsConstructor
-public class Schedule {
+
+
+public class Schedule extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,7 +30,6 @@ public class Schedule {
     public Schedule(ScheduleRequestDto requestDto) {
         this.username = requestDto.getUsername();
         this.title = requestDto.getTitle();
-        this.contents = requestDto.getContents();
         this.password = requestDto.getPassword();
         this.contents = requestDto.getContents();
 
