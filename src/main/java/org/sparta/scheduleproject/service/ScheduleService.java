@@ -5,6 +5,7 @@ import org.sparta.scheduleproject.dto.ScheduleResponseDto;
 import org.sparta.scheduleproject.entity.Schedule;
 import org.sparta.scheduleproject.repository.ScheduleRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,43 +32,44 @@ public class ScheduleService {
     }
 
     public List<ScheduleResponseDto> getoneSchedule(Long id) {
-        return scheduleRepository.findOne(id);
+        return scheduleRepository.findById(id).stream().map(ScheduleResponseDto::new).toList();
     }
 
     public List<ScheduleResponseDto> getAllSchedules() {
 
 
-        return scheduleRepository.findAll();
+        return scheduleRepository.findAll().stream().map(ScheduleResponseDto::new).toList();
 
 
     }
 
+    @Transactional
     public ScheduleResponseDto updateMemo(Long id, ScheduleRequestDto requestDto) {
 
-        Schedule schedule = scheduleRepository.findById(id);
+        Schedule schedule = findSchedule(id);
 
-        if(schedule != null&& schedule.getPassword().equals(requestDto.getPassword())) {
-            // memo 내용 수정
-            scheduleRepository.update(id, requestDto);
-            ScheduleResponseDto reponse = new ScheduleResponseDto(schedule);
-            return reponse;
-        } else {
-            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
-        }
+        schedule.update(requestDto);
+
+        return new ScheduleResponseDto(schedule);
     }
 
     public Long deleteMemo(Long id, ScheduleRequestDto requestDto) {
 
 
-        Schedule schedule = scheduleRepository.findById(id);
-        if(schedule != null&& schedule.getPassword().equals(requestDto.getPassword())) {
-            // memo 삭제
+        Schedule schedule = findSchedule(id);
 
-            scheduleRepository.delete(id);
+
+            scheduleRepository.delete(schedule);
             return id;
-        } else {
-            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
-        }
+
+
+    }
+
+    private  Schedule findSchedule(Long id) {
+        return scheduleRepository.findById(id).orElseThrow(() ->{
+            return new IllegalArgumentException("Schedule not found");
+            //schedule != null&& schedule.getPassword().equals(requestDto.getPassword())
+        });
     }
 
 }
