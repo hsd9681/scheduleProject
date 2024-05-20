@@ -5,7 +5,6 @@ import org.sparta.scheduleproject.dto.ScheduleResponseDto;
 import org.sparta.scheduleproject.entity.Schedule;
 import org.sparta.scheduleproject.exception.InvalidPasswordException;
 import org.sparta.scheduleproject.repository.ScheduleRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +42,7 @@ public class ScheduleService {
         Schedule schedule = findSchedule(id);
 
         if (!schedule.getPassword().equals(requestDto.getPassword())) {
-            throw new InvalidPasswordException("password wrong");
+            throw new InvalidPasswordException("Password wrong");
         }
 
         schedule.update(requestDto);

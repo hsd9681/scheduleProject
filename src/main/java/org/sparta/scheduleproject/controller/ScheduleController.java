@@ -1,5 +1,6 @@
 package org.sparta.scheduleproject.controller;
 
+import jakarta.validation.Valid;
 import org.sparta.scheduleproject.dto.ScheduleRequestDto;
 import org.sparta.scheduleproject.dto.ScheduleResponseDto;
 import org.sparta.scheduleproject.service.ScheduleService;
@@ -17,7 +18,7 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
     @PostMapping("/schedules")
-    public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto requestDto){
+    public ScheduleResponseDto createSchedule(@RequestBody @Valid ScheduleRequestDto requestDto){
         return scheduleService.createSchedule(requestDto);
     }
     //스케줄 하나 가져오기
