@@ -1,7 +1,6 @@
 package org.sparta.scheduleproject.controller;
 
 import jakarta.validation.Valid;
-import org.sparta.scheduleproject.dto.FileUploadRequestDto;
 import org.sparta.scheduleproject.dto.ScheduleRequestDto;
 import org.sparta.scheduleproject.dto.ScheduleResponseDto;
 import org.sparta.scheduleproject.service.ScheduleService;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -18,7 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 
 @RestController
