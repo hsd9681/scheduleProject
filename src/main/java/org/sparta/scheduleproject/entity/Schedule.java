@@ -25,6 +25,8 @@ public class Schedule extends Timestamped{
     private String contents;
     @Column(name = "password", nullable = false, length = 500)
     private String password;
+    @Column(name = "comentList",nullable = false, length = 500)
+    private String comentList;
 
 
 

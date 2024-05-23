@@ -33,28 +33,6 @@ public class ScheduleController {
     }
     private final List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png");
 
-    @PostMapping("/download")
-    public ResponseEntity<String> downloadImage(@RequestBody String imageUrl) {
-        try {
-            // 이미지 URL에서 이미지 다운로드
-            URL url = new URL(imageUrl);
-            InputStream inputStream = url.openStream();
-
-            // 이미지 저장 디렉토리 설정
-            String saveDirectory = System.getProperty("user.home") + File.separator + "downloaded_images" + File.separator;
-            Files.createDirectories(Paths.get(saveDirectory));
-
-            // 이미지 파일로 저장
-            Path imagePath = Paths.get(saveDirectory, "downloaded_image.jpg");
-            Files.copy(inputStream, imagePath);
-
-            return ResponseEntity.ok("Image downloaded and saved successfully to: " + imagePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to download image: " + e.getMessage());
-        }
-    }
-
     //스케줄 하나 가져오기
     @GetMapping("/schedule/{id}")
     public List<ScheduleResponseDto> getoneSchedule(@PathVariable Long id) {
