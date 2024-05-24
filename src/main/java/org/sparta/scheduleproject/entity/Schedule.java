@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.sparta.scheduleproject.dto.ScheduleRequestDto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity // JPA가 관리할 수 있는 Entity 클래스 지정
 @Getter
 @Setter
@@ -25,8 +28,8 @@ public class Schedule extends Timestamped{
     private String contents;
     @Column(name = "password", nullable = false, length = 500)
     private String password;
-    @Column(name = "comentList",nullable = false, length = 500)
-    private String comentList;
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
 
 
