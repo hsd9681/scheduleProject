@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.sparta.scheduleproject.dto.CommentRequestDto;
 import org.sparta.scheduleproject.dto.ScheduleRequestDto;
 
 import java.util.ArrayList;
@@ -46,5 +47,14 @@ public class Schedule extends Timestamped{
         this.title = requestDto.getTitle();
         this.password = requestDto.getPassword();
         this.contents = requestDto.getContents();
+    }
+
+    public void updateComment(Long commentId,  CommentRequestDto requestDto) {
+        Comment comment = this.comments
+                .stream()
+                .filter(c -> c.getId().equals(commentId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Comment not found"));
+        comment.update(requestDto);
     }
 }
