@@ -57,4 +57,11 @@ public class Schedule extends Timestamped{
                 .orElseThrow(() -> new IllegalArgumentException("Comment not found"));
         comment.update(requestDto);
     }
+    public void deleteComment(Long commentId) {
+        Comment comment = this.comments
+                .stream()
+                .filter(c -> c.getId().equals(commentId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Comment not found"));
+    }
 }

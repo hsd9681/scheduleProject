@@ -55,7 +55,7 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/schedules/{id}/comments/{id2}")
-    public Long deleteComment(@PathVariable Long id,@PathVariable Long id2) {
-        return scheduleService.deleteComment(id,id2);
+    public Long deleteComment(@PathVariable Long id,@PathVariable Long id2, @RequestBody CommentRequestDto requestDto) {
+        return scheduleService.deleteComment(id,id2, requestDto);
     }
 }

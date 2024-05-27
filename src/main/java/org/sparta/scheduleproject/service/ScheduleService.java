@@ -64,11 +64,33 @@ public class ScheduleService {
 
     public ScheduleResponseDto addComment(Long scheduleId, CommentRequestDto requestDto) {
         Schedule schedule = findSchedule(scheduleId);
-        Comment comment = new Comment(requestDto, schedule);
-//        commentRepository.save(comment);
-
+        Comment comment = new Comment(requestDto, schedule); //null 이 들어가는데
         schedule.getComments().add(comment);
+        commentRepository.save(comment); // 여기서 null이 해당값들을 찾아 jpa때문인가?
         return new ScheduleResponseDto(schedule);
+    }
+    @Transactional
+    public ScheduleResponseDto updateComment(Long id, CommentRequestDto requestDto,Long commentId) {
+        //어떻게 해당 게시물의 해당 댓을을 수정하고 삭제해야할까?
+        Schedule schedule = findSchedule(id);
+        Comment comment = findComment(id);
+        if (!comment.getUsername().equals(requestDto.getUsername())) {
+            throw new InvalidPasswordException("User wrong");
+        }
+        schedule.updateComment(commentId, requestDto);
+        return new ScheduleResponseDto(schedule);
+    }
+
+    public Long deleteComment(Long id,Long commentId, CommentRequestDto requestDto) {
+        Schedule schedule = findSchedule(id);
+        schedule.deleteComment(commentId);
+        Comment comment = findComment(commentId);
+        if (!comment.getUsername().equals(requestDto.getUsername())) {
+            throw new InvalidPasswordException("User wrong");
+        }
+        commentRepository.delete(comment);
+        //스케줄레포로 접근해서 댓글이 삭제되게???
+        return commentId;
     }
 
     private Schedule findSchedule(Long id) {
@@ -79,38 +101,5 @@ public class ScheduleService {
     private Comment findComment(Long id) {
         return commentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Comment not found"));
-    }
-
-    @Transactional
-    public ScheduleResponseDto updateComment(Long id, CommentRequestDto requestDto,Long commentId) {
-        //어떻게 해당 게시물의 해당 댓을을 수정하고 삭제해야할까?
-        Schedule schedule = findSchedule(id);
-//        Comment comment = findComment(commentId);
-//        System.out.println("comment id: " + comment.getId());
-//        if (!comment.getSchedule().getId().equals(id)){
-//            //게시물 id와 내가 url에 입력한 id와 같은가
-//            throw new IllegalArgumentException("Schedule not found");
-//        } else if (!comment.getId().equals(commentId)) {
-//            //해당 게시물에 해당 댓글이 있는가
-//            throw new IllegalArgumentException("Comment not found");
-//        }
-//        comment.update(requestDto);
-
-        schedule.updateComment(commentId, requestDto);
-        return new ScheduleResponseDto(schedule);
-    }
-
-    public Long deleteComment(Long id,Long commentId) {
-        Comment comment = findComment(commentId);
-        if (!comment.getSchedule().getId().equals(id)){
-            //게시물 id와 내가 url에 입력한 id와 같은가
-            throw new IllegalArgumentException("Schedule not found");
-        } else if (!comment.getId().equals(commentId)) {
-            //해당 게시물에 해당 댓글이 있는가
-            throw new IllegalArgumentException("Comment not found");
-        }
-        commentRepository.delete(comment);
-        //스케줄레포로 접근해서 댓글이 삭제되게???
-        return commentId;
     }
 }
