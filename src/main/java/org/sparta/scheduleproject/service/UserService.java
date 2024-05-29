@@ -1,8 +1,12 @@
 package org.sparta.scheduleproject.service;
 
+import jakarta.servlet.http.HttpServletResponse;
+import org.sparta.scheduleproject.dto.LoginRequestDto;
 import org.sparta.scheduleproject.dto.SignupRequestDto;
+import org.sparta.scheduleproject.dto.SignupResponseDto;
 import org.sparta.scheduleproject.entity.User;
 import org.sparta.scheduleproject.entity.UserRoleEnum;
+import org.sparta.scheduleproject.jwt.JwtUtil;
 import org.sparta.scheduleproject.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,16 +18,19 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     // ADMIN_TOKEN
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
-    public void signup(SignupRequestDto requestDto) {
+    public SignupResponseDto signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
 
@@ -52,5 +59,22 @@ public class UserService {
         // 사용자 등록
         User user = new User(username, password, email, role);
         userRepository.save(user);
+        return new SignupResponseDto(user);
+    }
+
+    public void login(LoginRequestDto loginRequestDto, HttpServletResponse res) {
+        String username = loginRequestDto.getUsername();
+        String password = loginRequestDto.getPassword();
+
+        User user = userRepository.findByUsername(username).orElseThrow(
+                ()-> new IllegalArgumentException("user not")
+        );
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new IllegalArgumentException("password incorrect");
+        }
+        System.out.println("로그인 성공: " + user.getUsername() + "님");
+
+        String token = jwtUtil.createToken(user.getUsername(),user.getRole());
+        jwtUtil.addJwtToCookie(token, res);
     }
 }
