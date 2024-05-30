@@ -10,7 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ScheduleRequestDto extends User {
+public class ScheduleRequestDto {
 
     private String title;
     @NotBlank
@@ -20,13 +20,4 @@ public class ScheduleRequestDto extends User {
     @NotBlank
     private String password;
 
-//    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//    String loggedInUsername = authentication.getName();
-//
-//    public ScheduleRequestDto(String title, String contents,String password) {
-//        this.username = title;
-//        this.password = contents;
-//        this.title = loggedInUsername;
-//        this.contents = password;
-//    }
 }

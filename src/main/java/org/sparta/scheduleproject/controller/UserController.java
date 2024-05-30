@@ -8,17 +8,14 @@ import org.sparta.scheduleproject.dto.SignupRequestDto;
 import org.sparta.scheduleproject.dto.SignupResponseDto;
 import org.sparta.scheduleproject.service.UserService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 
 /*
 1.강의에서는 시큐리티? 로그인을 먼저하고 로그인,회원가입 진행했지만 여기서는 모르겠음
 
  */
-@Controller
+@RestController
 @RequestMapping("/api")
 
 public class UserController {
@@ -32,7 +29,6 @@ public class UserController {
     @PostMapping("/user/signup")
     public SignupResponseDto signup(@RequestBody  SignupRequestDto signupRequestDto) {
         return userService.signup(signupRequestDto);
-
     }
 
     @PostMapping("/user/login")

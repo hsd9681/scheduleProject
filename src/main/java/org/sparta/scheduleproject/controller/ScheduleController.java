@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-public class ScheduleController {
+    public class ScheduleController {
 
     private final ScheduleService scheduleService;
 

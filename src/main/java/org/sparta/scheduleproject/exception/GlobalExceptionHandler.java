@@ -1,5 +1,6 @@
 package org.sparta.scheduleproject.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.sparta.scheduleproject.dto.ErrorDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
 
@@ -39,6 +41,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDto> handleGeneralException(Exception ex) {
         ErrorDto errorDto = new ErrorDto("서버 오류가 발생했습니다", String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()));
+        log.error(ex.getMessage(), ex);
         return new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
