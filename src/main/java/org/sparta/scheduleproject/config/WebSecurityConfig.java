@@ -20,6 +20,8 @@ public class WebSecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
                         .requestMatchers("/api/user/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
+                        .requestMatchers("api/schedule/**").permitAll()
+                        .requestMatchers("api/schedules/**").permitAll()
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 //
@@ -35,7 +37,7 @@ public class WebSecurityConfig {
 //                        // 로그인 처리 후 실패 시 URL
 //                        .failureUrl("/api/user/login-page?error")
 //                        .permitAll()
-//        );
+//        ); ----->
 
         return http.build();
     }

@@ -21,7 +21,7 @@ public class ScheduleController {
     }
 
     @PostMapping("/schedules")
-    public ScheduleResponseDto createSchedule(@RequestBody @Valid ScheduleRequestDto requestDto){
+    public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto requestDto){
         return scheduleService.createSchedule(requestDto);
     }
 

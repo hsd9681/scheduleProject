@@ -1,29 +1,32 @@
 package org.sparta.scheduleproject.service;
 
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.sparta.scheduleproject.dto.LoginRequestDto;
+import org.sparta.scheduleproject.dto.LoginResponseDto;
 import org.sparta.scheduleproject.dto.SignupRequestDto;
 import org.sparta.scheduleproject.dto.SignupResponseDto;
 import org.sparta.scheduleproject.entity.User;
 import org.sparta.scheduleproject.entity.UserRoleEnum;
+import org.sparta.scheduleproject.exception.DuplicateUsernameException;
+import org.sparta.scheduleproject.exception.LoginFailedException;
 import org.sparta.scheduleproject.jwt.JwtUtil;
 import org.sparta.scheduleproject.repository.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public UserService(UserRepository userRepository,JwtUtil jwtUtil) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
 
@@ -32,12 +35,12 @@ public class UserService {
 
     public SignupResponseDto signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
-        String password = passwordEncoder.encode(requestDto.getPassword());
+        String password = requestDto.getPassword();
 
         // 회원 중복 확인
         Optional<User> checkUsername = userRepository.findByUsername(username);
         if (checkUsername.isPresent()) {
-            throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
+            throw new DuplicateUsernameException("중복된 username 입니다", HttpServletResponse.SC_BAD_REQUEST);
         }
 
         // email 중복확인
@@ -58,23 +61,27 @@ public class UserService {
 
         // 사용자 등록
         User user = new User(username, password, email, role);
-        userRepository.save(user);
-        return new SignupResponseDto(user);
+        User usersave = userRepository.save(user);
+        return new SignupResponseDto(usersave);
     }
 
-    public void login(LoginRequestDto loginRequestDto, HttpServletResponse res) {
+    public LoginResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse res) {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
 
         User user = userRepository.findByUsername(username).orElseThrow(
-                ()-> new IllegalArgumentException("user not")
+                () -> new LoginFailedException("회원을 찾을 수 없습니다", HttpServletResponse.SC_BAD_REQUEST)
         );
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException("password incorrect");
+        if (!password.equals(user.getPassword())) {
+            throw new LoginFailedException("비밀번호가 틀렸습니다", HttpServletResponse.SC_BAD_REQUEST);
         }
-        System.out.println("로그인 성공: " + user.getUsername() + "님");
+
 
         String token = jwtUtil.createToken(user.getUsername(),user.getRole());
         jwtUtil.addJwtToCookie(token, res);
+
+        log.info("로그인 성공: {}님", user.getUsername());
+
+        return new LoginResponseDto(user);
     }
 }

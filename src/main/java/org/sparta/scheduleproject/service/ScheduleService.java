@@ -9,6 +9,8 @@ import org.sparta.scheduleproject.entity.Schedule;
 import org.sparta.scheduleproject.exception.InvalidPasswordException;
 import org.sparta.scheduleproject.repository.CommentRepository;
 import org.sparta.scheduleproject.repository.ScheduleRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,7 @@ import java.util.List;
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final CommentRepository commentRepository;
+
 
     public ScheduleService(ScheduleRepository scheduleRepository, CommentRepository commentRepository) {
         this.scheduleRepository = scheduleRepository;

@@ -1,4 +1,5 @@
 package org.sparta.scheduleproject.jwt;
+
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -10,10 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sparta.scheduleproject.entity.UserRoleEnum;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -22,7 +21,7 @@ import java.util.Base64;
 import java.util.Date;
 
 @Component
-@EnableWebSecurity
+//@EnableWebSecurity
 public class JwtUtil {
     // Header KEY 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
