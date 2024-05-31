@@ -31,6 +31,7 @@ public class ScheduleService {
         Schedule schedule = new Schedule(requestDto);
         Schedule savedSchedule = scheduleRepository.save(schedule);
         return new ScheduleResponseDto(savedSchedule);
+
     }
 
     public List<ScheduleResponseDto> getoneSchedule(Long id) {

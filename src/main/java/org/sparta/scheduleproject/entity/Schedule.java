@@ -29,6 +29,11 @@ public class Schedule extends Timestamped{
     private String contents;
     @Column(name = "password", nullable = false, length = 500)
     private String password;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", unique = false)
+    private User user;
+
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 

@@ -2,7 +2,6 @@ package org.sparta.scheduleproject.controller;
 
 import jakarta.validation.Valid;
 import org.sparta.scheduleproject.dto.CommentRequestDto;
-import org.sparta.scheduleproject.dto.CommentResponseDto;
 import org.sparta.scheduleproject.dto.ScheduleRequestDto;
 import org.sparta.scheduleproject.dto.ScheduleResponseDto;
 import org.sparta.scheduleproject.service.ScheduleService;

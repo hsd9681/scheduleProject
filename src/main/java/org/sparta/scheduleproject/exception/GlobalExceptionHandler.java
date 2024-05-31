@@ -17,9 +17,7 @@ public class GlobalExceptionHandler {
             UnauthorizedException.class,
             DuplicateUsernameException.class,
             LoginFailedException.class})
-//    protected ResponseEntity handleCustomException(InvalidPasswordException ex) {
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
-//    }
+
     public ResponseEntity<ErrorDto> handleCustomExceptions(RuntimeException ex) {
         int statusCode;
         if (ex instanceof InvalidTokenException) {

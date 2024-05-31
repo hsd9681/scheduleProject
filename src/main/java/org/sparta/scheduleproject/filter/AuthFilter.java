@@ -33,7 +33,7 @@ public class AuthFilter implements Filter {
         String url = httpServletRequest.getRequestURI();
 
         if (StringUtils.hasText(url) &&
-                (url.startsWith("/api/user") || url.startsWith("/css") || url.startsWith("/js"))
+                (url.startsWith("/api/user") || url.startsWith("/css") || url.startsWith("/js")|| url.startsWith("/swagger-ui") || url.startsWith("/v3/api-docs")|| url.startsWith("/api-docs") || url.startsWith("/swagger-resources"))
         ) {
             // 회원가입, 로그인 관련 API 는 인증 필요없이 요청 진행
             chain.doFilter(request, response); // 다음 Filter 로 이동
